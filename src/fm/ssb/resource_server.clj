@@ -82,10 +82,10 @@
         http-server  (doto (HttpServer/create (InetSocketAddress. port) 10)
                            (.createContext context-path http-handler)
                            (.start))]
-    (log/debug (format "Resource server is running (port: %, path: %s)." 
+    (log/debug (format "Resource server is running (port: %s, path: %s)." 
                        port context-path))    
     (fn []
-      (log/debug (format "Stopping resource server (port: %, path: %s)..." 
+      (log/debug (format "Stopping resource server (port: %s, path: %s)..." 
                          port context-path))
       (.stop http-server 0)
       (log/debug "Resource server has been stopped."))))
