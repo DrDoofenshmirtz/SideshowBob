@@ -13,8 +13,8 @@
 (def ^{:private true :const true} default-config 
                                   {:ws-port   17500
                                    :http-port 20500
-                                   :root-path "."
-                                   :app-path  "index.html"
+                                   :root-path "./app"
+                                   :app-path  "app.html"
                                    :services  []})
 
 (defn- quote-values [config & keys]
@@ -44,20 +44,20 @@
     config))
 
 (defn load-config [config-path]
-  (when (let [current-ns (-> *ns* str symbol)] 
-          (try
-            (in-ns 'fm.ssb.config._)
-            (refer-clojure)
-            (use '[fm.ssb.config :only (defapp)])
-            (load-file config-path)
-            true
-            (catch Exception invalid-config
-              (log/error "Invalid app config!" invalid-config)
-              false)
-            (finally 
-              (in-ns current-ns))))
-    (when-let [config (ns-resolve 'fm.ssb.config._ 'config-)]
-      (call-boot-hook @config))))
+  (let [config-ns (create-ns 'fm.ssb.config._)]
+    (if-let [config-var (try
+                          (binding [*ns* config-ns]
+                            (refer-clojure)
+                            (use '[fm.ssb.config :only (defapp)])
+                            (load-file config-path))
+                          (ns-resolve config-ns 'config-)
+                          (catch Exception invalid-config
+                            (log/error "Invalid app config!" invalid-config)
+                            nil)
+                          (finally
+                            (remove-ns 'fm.ssb.config._)))]
+      (call-boot-hook @config-var)
+      (default-config))))
 
 (def ^{:private true :const true} config-key :fm.ssb/config)
 
