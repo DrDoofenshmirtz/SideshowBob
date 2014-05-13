@@ -15,8 +15,8 @@
                                    :ws-service   {:port     17500
                                                   :services []}   
                                    :http-service {:port      20500
-                                                  :root-path "./app"
-                                                  :app-path  "app.html"}})
+                                                  :root-path "."
+                                                  :app-path  "index.html"}})
 
 (defn- quote-values [config & keys]
   (reduce (fn [config key]
