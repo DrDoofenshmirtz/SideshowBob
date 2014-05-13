@@ -10,12 +10,13 @@
     [fm.websockets.resources :as rsc]
     [fm.ssb.boot :as boot]))
 
-(def ^{:private true :const true} default-config 
-                                  {:ws-port   17500
-                                   :http-port 20500
-                                   :root-path "./app"
-                                   :app-path  "app.html"
-                                   :services  []})
+(def ^{:private true :const true} default-config
+                                  {:app-name     "app"
+                                   :ws-service   {:port     17500
+                                                  :services []}   
+                                   :http-service {:port      20500
+                                                  :root-path "./app"
+                                                  :app-path  "app.html"}})
 
 (defn- quote-values [config & keys]
   (reduce (fn [config key]
@@ -25,14 +26,28 @@
           config 
           keys))
 
+(defn- complete-ws-config [template config]
+  (update-in template [:ws-service] #(-> %
+                                         (merge (:ws-service config))
+                                         (quote-values :boot :services))))
+
+(defn- complete-http-config [template config]
+  (if-let [http-service (:http-service config)]
+    (update-in template [:http-service] merge http-service)
+    (dissoc template :http-service)))
+
+(defn- complete-config [config app-name]
+  (-> default-config
+      (complete-ws-config config)
+      (complete-http-config config)
+      (assoc :app-name (str app-name))))
+
 (defmacro defapp [app-name & {:as config}]
-  (let [config (merge default-config config)
-        config (quote-values config :boot :services)
-        config (assoc config :app-name (str app-name))]
+  (let [config (complete-config config app-name)]
     `(def ~'config- ~config)))
 
 (defn- call-boot-hook [config]
-  (if-let [boot-ns (:boot config)]
+  (if-let [boot-ns (get-in config [:ws-service :boot])]
     (if-let [boot-hook (boot/find-boot-hook boot-ns)]
       (try
         (boot-hook config)
@@ -57,7 +72,7 @@
                           (finally
                             (remove-ns 'fm.ssb.config._)))]
       (call-boot-hook @config-var)
-      (default-config))))
+      default-config)))
 
 (def ^{:private true :const true} config-key :fm.ssb/config)
 
