@@ -36,6 +36,7 @@
   forwarding them to the appropriate rpc targets."
   [config resource-store-constructor]
   (-> config
+      :ws-service
       :services
       request-handler
       message-handler

@@ -38,30 +38,48 @@
 (defn- app-store []
   (rstore/partition-store resource-store ::fm.websockets.app))
 
-(defn- start-resource-server [{:keys [http-port app-name root-path app-path]}]
-  (rss/start-up http-port app-name (frf/finder root-path app-path)))
+(defn- start-resource-server [{:keys [app-name http-service] :as config}]
+  (if-let [{:keys [port root-path app-path]} http-service]
+    (do
+      (log/debug (format "Starting resource server (config: %s)..." 
+                         http-service))
+      (let [finder      (frf/finder root-path app-path) 
+            stop-server (rss/start-up port app-name finder)]
+        (fn [log]
+          (try
+            (log "Stopping resource server...")
+            (stop-server)
+            (log "...done.")
+            (catch Exception error
+              (log "Failed to stop resource server!" error))))))
+    (do
+      (log/debug "No resource server (http-service) configured.")
+      (log/debug "Starting in 'embedded' mode...")
+      (fn [log]))))
 
-(defn- start-app-server [{ws-port :ws-port :as config}]
-  (wss/start-up ws-port (hdlr/app-handler config connection-store)))
-
-(defn- start-servers [config]
-  (log/debug (format "Starting servers for Sideshow Bob app: %s..." config))
-  (let [resource-server (start-resource-server config)
-        app-server      (start-app-server config)]
-    (log/debug "...done. Waiting for clients.")    
-    (fn stop-servers [log]
-      (try
-        (log "Stopping resource server...")
-        (resource-server)
-        (log "...done.")
-        (catch Exception error
-          (log "Failed to stop resource server!" error)))
+(defn- start-app-server [{ws-service :ws-service :as config}]
+  (log/debug (format "Starting app server (config: %s)..." ws-service))
+  (let [{port :port} ws-service
+        handler      (hdlr/app-handler config connection-store)
+        stop-server  (wss/start-up port handler)]
+    (fn [log]
       (try
         (log "Stopping app server...")
-        (app-server)
+        (stop-server)
         (log "...done.")
         (catch Exception error
           (log "Failed to stop app server!" error))))))
+
+(defn- start-servers [config]
+  (log/debug (format "Starting servers for Sideshow Bob app: %s..." config))
+  (let [stop-resource-server (start-resource-server config)
+        stop-app-server      (start-app-server config)]
+    (log/debug "...done. Waiting for clients.")    
+    (fn stop-servers [log]
+      (log (format "Stopping servers of Sideshow Bob app: %s..." config))
+      (stop-resource-server log)
+      (stop-app-server log)
+      (log "Bye!"))))
 
 (defn- close-resources [log]
   (doseq [key (keys @resource-store)]
