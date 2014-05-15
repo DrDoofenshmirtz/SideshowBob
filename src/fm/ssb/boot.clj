@@ -4,7 +4,9 @@
   "Define a hook supposed to be called when an SSB app is booted."
   
     :author "Frank Mosebach"}
-  fm.ssb.boot)
+  fm.ssb.boot
+  (:require 
+    [clojure.contrib.logging :as log]))
 
 (defmacro def-boot-hook [hook]
   (let [hook-name (gensym "__boot-hook__")
@@ -20,8 +22,13 @@
     hook))
 
 (defn find-boot-hook [ns-name]
-  (require ns-name)
-  (->> (ns-interns ns-name)
-       vals
-       (some boot-hook)))
+  (try
+    (require ns-name)
+    (->> (ns-interns ns-name)
+         vals
+         (some boot-hook))
+    (catch Exception find-failed
+      (log/error (format "Search for boot hook in '%s' failed!" ns-name) 
+                 find-failed)
+      nil)))
 
