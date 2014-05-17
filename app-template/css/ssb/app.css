@@ -1,22 +1,22 @@
 body {
   width: 100%;
   height: 100%;
-  background-color: LightGray;
+  background-color: Black;
 }
 
-.fuapp-view {
+.ssb-welcome-view {
   display: inline-block;
   position: relative;
-  top: 30px;
-  left: 5px;
-  border: solid 1px gray;
-  border-radius: 4px 4px 4px 4px;
-  padding: 12px 5px 5px 5px;
+  top: 60px;
+  left: 40px;
+  border: solid 2px LightGray;
+  border-radius: 5px 5px 5px 5px;
+  padding: 10px 5px 5px 5px;
   white-space: nowrap;
-  background-color: SkyBlue;
+  background-color: White;
 }
 
-.fuapp-title-bar {
+.ssb-welcome-title-bar {
   display: inline-block;
   position: absolute;
   top: -1em;
@@ -24,11 +24,30 @@ body {
   border: solid 1px gray;
   border-radius: 4px 4px 4px 4px;
   padding: 2px 4px 2px 4px;
-  background-color: AliceBlue;
+  background-color: LightGray;
 }
 
-.fuapp-progress-bar {
-  margin-top: 10px;
-  width: 100%;
+.ssb-welcome-label {
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: top;
+  padding-top: 15px;
+}
+
+.ssb-welcome-message {
+  display: inline-block;
+  position: relative;
+  white-space: pre-wrap;
+  vertical-align: top;
+  padding-top: 15px;
+  width: 12em;
+}
+
+.ssb-welcome-portrait {
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: top;
 }
 
