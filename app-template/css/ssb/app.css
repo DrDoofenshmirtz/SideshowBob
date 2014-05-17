@@ -5,14 +5,13 @@ body {
 }
 
 .ssb-welcome-view {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: row;
   position: relative;
-  top: 60px;
-  left: 40px;
+  margin: 25px 25px 25px 25px; 
   border: solid 2px LightGray;
   border-radius: 5px 5px 5px 5px;
   padding: 10px 5px 5px 5px;
-  white-space: nowrap;
   background-color: White;
 }
 
@@ -24,30 +23,55 @@ body {
   border: solid 1px gray;
   border-radius: 4px 4px 4px 4px;
   padding: 2px 4px 2px 4px;
+  white-space: nowrap;
   background-color: LightGray;
 }
 
+.ssb-welcome-content {
+  display: inline-flex;
+  flex-direction: column;
+  order: 0;
+  flex: 1;
+}
+
+.ssb-welcome-content-top {
+  display: inline-flex;
+  flex-direction: row;
+  order: 0;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
 .ssb-welcome-label {
-  display: inline-block;
-  position: relative;
+  order: 0;
   white-space: nowrap;
-  vertical-align: top;
-  padding-top: 15px;
 }
 
 .ssb-welcome-message {
-  display: inline-block;
-  position: relative;
+  order: 1;
   white-space: pre-wrap;
-  vertical-align: top;
-  padding-top: 15px;
-  width: 12em;
+  padding-left: 10px;
+}
+
+.ssb-welcome-content-bottom {
+  order: 1;
+  flex: 1;
+  border: solid 1px gray;
+  border-radius: 4px 4px 4px 4px;
+  padding: 4px 4px 4px 4px;
+  background-color: LightGray;
 }
 
 .ssb-welcome-portrait {
-  display: inline-block;
-  position: relative;
-  white-space: nowrap;
-  vertical-align: top;
+  display: inline-flex;
+  flex-direction: column;
+  order: 1;  
+}
+
+.ssb-welcome-image {
+  order: 0;  
+}
+
+.ssb-welcome-help {
 }
 
