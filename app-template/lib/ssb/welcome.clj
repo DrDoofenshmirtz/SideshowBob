@@ -15,5 +15,6 @@
 
 (tar/defroute (tar/prefixed-request-name-route "welcome" "."))
 
-(tar/defaction say-hello [])
+(tar/defaction say-hello []
+  "Well, whatever you want him to say...")
 
