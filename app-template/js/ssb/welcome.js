@@ -1,7 +1,8 @@
 (function(global, $) {
   var connectionSpec,
       client,
-      welcome;
+      welcome,
+      showResponse;
   
   connectionSpec = {port: 17500, serviceName: 'welcome'};
   client = $.fm.ws.makeClient(connectionSpec, {
@@ -14,7 +15,7 @@
     onConnect: function() {
       global.console.log('Client connected.');
       welcome.sayHello({
-        onSuccess: function(result) {},
+        onSuccess: function(result) { showResponse(result); },
         onFailure: function(error) {}
       });
     },
@@ -24,6 +25,22 @@
   });
   welcome = client.defNamespace('welcome');
   welcome.defRequest('sayHello');
+  showResponse = function(response) {
+    var messageView = $('.ssb-welcome-view')
+                        .first()
+                        .find('.ssb-welcome-message')
+                        .first();
+   
+    if (messageView) {
+      if (response === true) {
+        response = 'Well, apparently nothing...'
+      } else {
+        response = (response || '').toString();
+      }
+                          
+      messageView.text(response);
+    }                      
+  };
   
   $(function() { client.open(); }); 
 })(this, (this.jQuery || this));
