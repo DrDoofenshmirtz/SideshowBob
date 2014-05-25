@@ -35,9 +35,6 @@
 (defn- connection-store [connection]
   (rstore/partition-store resource-store (:id connection)))
 
-(defn- app-store []
-  (rstore/partition-store resource-store ::fm.websockets.app))
-
 (defn- start-resource-server [{:keys [app-name http-service] :as config}]
   (if-let [{:keys [port root-path app-path]} http-service]
     (do
