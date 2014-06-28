@@ -7,14 +7,17 @@
   ssb.welcome
   (:require 
     [fm.ssb.boot :as boot]
+    [fm.ssb.config :as cfg]
+    [fm.websockets.rpc.request :as req]
     [fm.websockets.rpc.targets :as tar]))
 
 (boot/def-boot-hook (fn [config]
                       (assoc config ::message 
-                                    "Sideshow Bob says: 'Welcome!'")))
+                                    "Well, whatever you want him to say...")))
 
 (tar/defroute (tar/prefixed-request-name-route "welcome" "."))
 
 (tar/defaction say-hello []
-  "Well, whatever you want him to say...")
+  (let [message (-> (req/connection) cfg/get-config ::message)]
+    message))
 
