@@ -76,8 +76,11 @@
 
 (def ^{:private true :const true} config-key :fm.ssb/config)
 
+(def ^{:private true :const true} config-context :application)
+
 (defn- store-config [connection config]
-  (rsc/store! connection config-key config :connection))
+  (when-not (rsc/get-resource connection config-context config-key)
+    (rsc/store! connection config-context config-key config :connection)))
 
 (defn connection-handler [config]
   (fn [connection]
@@ -85,5 +88,5 @@
     connection))
 
 (defn get-config [connection]
-  (rsc/get-resource connection config-key))
+  (rsc/get-resource connection config-context config-key))
 
