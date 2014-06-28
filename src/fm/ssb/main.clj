@@ -32,8 +32,8 @@
                                                 config-path))))
     config-path))
 
-(defn- connection-store [connection]
-  (rstore/partition-store resource-store (:id connection)))
+(defn- store-provider [connection id]
+  (rstore/partition-store resource-store id))
 
 (defn- start-resource-server [{:keys [app-name http-service] :as config}]
   (if-let [{:keys [port root-path app-path]} http-service]
@@ -57,7 +57,7 @@
 (defn- start-app-server [{ws-service :ws-service :as config}]
   (log/debug (format "Starting app server (config: %s)..." ws-service))
   (let [{port :port} ws-service
-        handler      (hdlr/app-handler config connection-store)
+        handler      (hdlr/app-handler config store-provider)
         stop-server  (wss/start-up port handler)]
     (fn [log]
       (try
