@@ -24,21 +24,21 @@
       ppg/message-handler
       rscs/message-handler))
 
-(defn- connection-handler [message-handler config resource-store-constructor]
+(defn- connection-handler [message-handler config store-provider]
   (-> (comp (mloop/connection-handler message-handler) 
             (jrpc/connection-handler)
             (ppg/connection-handler)
             (cfg/connection-handler config))
-      (rscs/connection-handler resource-store-constructor)))
+      (rscs/connection-handler store-provider)))
 
 (defn app-handler 
   "Creates a connection handler that processes incoming JSON RPC requests,
   forwarding them to the appropriate rpc targets."
-  [config resource-store-constructor]
+  [config store-provider]
   (-> config
       :ws-service
       :services
       request-handler
       message-handler
-      (connection-handler config resource-store-constructor)))
+      (connection-handler config store-provider)))
 
