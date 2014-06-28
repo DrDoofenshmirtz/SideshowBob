@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>  
+  <head>
+    <meta charset=utf-8>
+    <title>File Upload</title>
+    <link rel="stylesheet" type="text/css" href="css/ssb/file-upload-app.css">
+    <script src="js/ssb/jquery-1.10.2.js"></script>
+    <script src="js/ssb/fm-core.js"></script>
+    <script src="js/ssb/fm-files.js"></script>
+    <script src="js/ssb/file-transfer.js"></script>
+    <script src="js/ssb/ws-url-builder.js"></script>
+    <script src="js/ssb/ws-connection.js"></script>
+    <script src="js/ssb/ws-channel.js"></script>
+    <script src="js/ssb/ws-client.js"></script>
+    <script src="js/ssb/file-upload-command.js"></script>
+    <script src="js/ssb/file-upload-presenter.js"></script>
+    <script src="js/ssb/file-upload-app.js"></script>
+  </head>
+  <body>
+    <div class="fuapp-view">
+      <div class="fuapp-title-bar">
+        File Upload
+      </div>
+      <div>
+        <span>
+          Please select a file to upload:
+          <input type="file" class="fuapp-file-selection" />
+          <button class="fuapp-upload-button">Upload</button>
+        </span>
+      </div>
+      <progress class="fuapp-progress-bar" max="1.0"></progress>
+    </div>   
+  </body>
+</html>
+
