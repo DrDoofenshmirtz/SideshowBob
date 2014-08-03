@@ -7,7 +7,7 @@
                  [commons-codec/commons-codec "1.6"]
                  [com.sun.net.httpserver/http "20070405"]
                  [fm/fm-core "1.0.0-SNAPSHOT"]
-                 [fm/fm-resources "1.0.0-SNAPSHOT"]
+                 [fm/fm-resources "1.1.0-SNAPSHOT"]
                  [fm/fm-websockets "1.1.0-SNAPSHOT"]]                 
   :aot [fm.ssb.main]
   :jar-name "fm-ssb.jar"
