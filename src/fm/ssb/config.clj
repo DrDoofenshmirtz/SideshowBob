@@ -7,7 +7,6 @@
   fm.ssb.config
   (:require
     [clojure.contrib.logging :as log]
-    [fm.websockets.resources :as rsc]
     [fm.ssb.boot :as boot]))
 
 (def ^{:private true :const true} default-config
@@ -74,19 +73,18 @@
       (call-boot-hook @config-var)
       default-config)))
 
-(def ^{:private true :const true} config-key :fm.ssb/config)
+(def ^{:private true :const true} config-key ::config)
 
-(def ^{:private true :const true} config-context :application)
-
-(defn- store-config [connection config]
-  (when-not (rsc/get-resource connection config-context config-key)
-    (rsc/store! connection config-context config-key config :connection)))
+(defn- with-config [connection config]
+  (assoc connection config-key config))
 
 (defn connection-handler [config]
-  (fn [connection]
-    (store-config connection config)
-    connection))
+  (if config
+    (fn [connection]
+      (log/debug "Attach config to connection (id: %s).")
+      (with-config connection config))
+    identity))
 
 (defn get-config [connection]
-  (rsc/get-resource connection config-context config-key))
+  (get connection config-key))
 
