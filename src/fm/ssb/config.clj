@@ -81,7 +81,8 @@
 (defn connection-handler [config]
   (if config
     (fn [connection]
-      (log/debug "Attach config to connection (id: %s).")
+      (log/debug (format "Attach config to connection (id: %s)." 
+                         (:id connection)))
       (with-config connection config))
     identity))
 
