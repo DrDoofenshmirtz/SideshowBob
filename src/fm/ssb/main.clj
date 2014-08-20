@@ -32,8 +32,17 @@
                                                 config-path))))
     config-path))
 
-(defn- store-provider [connection id]
-  (rstore/partition-store resource-store id))
+(defn- load-config [config-path]
+  (-> (check-config-path config-path)
+      cfg/load-config
+      (assoc :resource-store 
+             (rstore/partition-store resource-store ::application))))
+
+(defn- store-provider [connection]
+  {:application (rstore/partition-store resource-store 
+                                        ::application)
+   :connection  (rstore/partition-store resource-store 
+                                        [::connection (:id connection)])})
 
 (defn- start-resource-server [{:keys [app-name http-service] :as config}]
   (if-let [{:keys [port root-path app-path]} http-service]
@@ -99,8 +108,7 @@
       (.printStackTrace error))))
 
 (defn run [config-path]
-  (let [config-path  (check-config-path config-path)
-        config       (cfg/load-config config-path)
+  (let [config       (load-config config-path)
         stop-servers (start-servers config)]
     (fn shut-down
       ([]
@@ -108,7 +116,7 @@
       ([log]
         (close-resources log)
         (stop-servers log)))))
-  
+
 (defn -main [& args]
   (let [config-path (-> args first str .trim)]
     (if (.isEmpty config-path)
